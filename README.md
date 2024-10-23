@@ -10,4 +10,4 @@
 
 ### - Criptografia de senhas
 
-- Jwt (JSON Web Token) para código específico de usuário logado.
+- Jwt (JSON Web Token) para código específico de cada usuário cadastrado.
