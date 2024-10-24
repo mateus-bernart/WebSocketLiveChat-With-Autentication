@@ -11,3 +11,7 @@
 ### - Criptografia de senhas
 
 - Jwt (JSON Web Token) para código específico de cada usuário cadastrado.
+
+### Namespaces
+
+- Uso de namespaces para autenticação de usuários utilizando o token jwt vindo do frontend.
