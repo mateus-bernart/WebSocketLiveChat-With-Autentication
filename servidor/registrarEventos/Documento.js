@@ -16,9 +16,13 @@ function registrarEventosDocumento(socket, io) {
 
       if (documento) {
         socket.join(nomeDocumento);
+
         adicionarConexao({ nomeDocumento, nomeUsuario });
+
         const usuariosNoDocumento = obterUsuariosDocumento(nomeDocumento);
-        console.log(usuariosNoDocumento);
+
+        io.to(nomeDocumento).emit("usuarios_no_documento", usuariosNoDocumento);
+        //socket.to envia para todo que estao no documento exceto o cliente que esta conectado no socket.
 
         devolverTexto(documento.texto);
       }
