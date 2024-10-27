@@ -2,8 +2,10 @@ const conexoesDocumentos = [];
 
 function encontrarConexao(nomeDocumento, nomeUsuario) {
   return conexoesDocumentos.find((conexao) => {
-    conexao.nomeDocumento === nomeDocumento &&
-      conexao.nomeUsuario === nomeUsuario;
+    return (
+      conexao.nomeDocumento === nomeDocumento &&
+      conexao.nomeUsuario === nomeUsuario
+    );
   });
 }
 
