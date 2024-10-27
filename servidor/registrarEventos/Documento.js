@@ -5,6 +5,7 @@ import {
 } from "../db/documentosDb.js";
 import {
   adicionarConexao,
+  encontrarConexao,
   obterUsuariosDocumento,
   removerConexao,
 } from "../utils/conexoesDocumentos.js";
@@ -16,24 +17,43 @@ function registrarEventosDocumento(socket, io) {
       const documento = await encontrarDocumento(nomeDocumento);
 
       if (documento) {
-        socket.join(nomeDocumento);
+        const conexaoEncontrada = encontrarConexao(nomeDocumento, nomeUsuario);
 
-        adicionarConexao({ nomeDocumento, nomeUsuario });
+        if (!conexaoEncontrada) {
+          socket.join(nomeDocumento);
 
-        const usuariosNoDocumento = obterUsuariosDocumento(nomeDocumento);
+          adicionarConexao({ nomeDocumento, nomeUsuario, id: socket.id });
 
-        io.to(nomeDocumento).emit("usuarios_no_documento", usuariosNoDocumento);
-        //socket.to envia para todo que estao no documento exceto o cliente que esta conectado no socket.
+          socket.data = {
+            usuarioEntrou: true,
+          };
 
-        devolverTexto(documento.texto);
+          const usuariosNoDocumento = obterUsuariosDocumento(nomeDocumento);
+
+          io.to(nomeDocumento).emit(
+            "usuarios_no_documento",
+            usuariosNoDocumento
+          );
+          //socket.to envia para todo que estao no documento exceto o cliente que esta conectado no socket.
+
+          devolverTexto(documento.texto);
+        } else {
+          socket.emit("usuario_ja_no_documento");
+        }
       }
 
       socket.on("disconnect", () => {
-        removerConexao(nomeDocumento, nomeUsuario);
+        //desconecta apenas se usuario entrou no documento
+        if (socket.data.usuarioEntrou) {
+          removerConexao(socket.id);
 
-        const usuariosNoDocumento = obterUsuariosDocumento(nomeDocumento);
+          const usuariosNoDocumento = obterUsuariosDocumento(nomeDocumento);
 
-        io.to(nomeDocumento).emit("usuarios_no_documento", usuariosNoDocumento);
+          io.to(nomeDocumento).emit(
+            "usuarios_no_documento",
+            usuariosNoDocumento
+          );
+        }
       });
 
       socket.on("texto_editor", async ({ texto, nomeDocumento }) => {

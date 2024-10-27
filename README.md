@@ -22,3 +22,9 @@
 - Adicionado um intermediador entre o cliente e o servidor para permitir/negar a tentativa de conexão. Estes são executados sequencialmente.
 - const nspUsuarios = io.of("/usuarios");
 - nspUsuarios.use(autorizaUsuario);
+
+### Status de usuários conectados
+
+- Atualização em tempo real com local storage
+- Remover a conexão via nome do documento/nome do usuário ou ID do socket.
+
